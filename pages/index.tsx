@@ -13,6 +13,7 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>Welcome to Save for Later!</h1>
+        <h2>Login or Register:</h2>
       </main>
     </div>
   )
