@@ -1,36 +1,20 @@
-import { NextApiRequest } from 'next'
+import { NextApiHandler } from 'next'
 import NextAuth from 'next-auth'
-import CredentialsProvider from 'next-auth/providers/credentials'
+import Providers from 'next-auth/providers'
+import Adapters from 'next-auth/adapters'
+import prisma from '../../../lib/prisma'
+import { User } from '.prisma/client'
 
-interface Credentials {
-  username: {
-    label: string
-    type: string
-    placeholder: string
-  }
-  password: {
-    label: string
-    type: string
-  }
-}
+const authHandler: NextApiHandler = (req, res) => NextAuth(req, res, options)
+export default authHandler
 
-export default NextAuth({
+const options = {
   providers: [
-    CredentialsProvider({
-      name: 'Username and Password',
-      credentials: {
-        username: { label: 'Username', type: 'text', placeholder: 'Username' },
-        password: { label: 'Password', type: 'password' }
-      },
-      async authorize(credentials: Credentials, req: NextApiRequest) {
-        const user = { id: 1, name: 'RJ', email: 'rjshoemaker@jgiajidfj' }
-
-        if (user) {
-          return user
-        } else {
-          return null
-        }
-      }
+    Providers.GitHub({
+      clientId: process.env.GITHUB_ID,
+      clientSecret: process.env.GITHUB_SECRET
     })
-  ]
-})
+  ],
+  adapter: Adapters.Prisma.Adapter({ prisma }),
+  secret: process.env.SECRET
+}

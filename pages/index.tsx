@@ -1,8 +1,10 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import styles from '../styles/Home.module.scss'
+import { useSession, signOut, signIn } from 'next-auth/client'
 
 export default function Home() {
+  const [session, loading] = useSession()
+
   return (
     <div className={styles.container}>
       <Head>
@@ -11,9 +13,21 @@ export default function Home() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
+      <h1>Welcome to Save for Later!</h1>
+
       <main className={styles.main}>
-        <h1 className={styles.title}>Welcome to Save for Later!</h1>
-        <h2>Login or Register:</h2>
+        {session ? (
+          <>
+            <h3>Signed in as {session.user?.name}</h3>
+            <button onClick={() => signOut()}>Sign Out</button>
+          </>
+        ) : (
+          <>
+            <h3>Not signed in</h3>
+            {/* <a href='/api/auth/signin'>Sign In</a> */}
+            <button onClick={() => signIn('github')}>Sign In</button>
+          </>
+        )}
       </main>
     </div>
   )
