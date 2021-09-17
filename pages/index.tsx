@@ -5,6 +5,10 @@ import { useSession, signOut, signIn } from 'next-auth/client'
 export default function Home() {
   const [session, loading] = useSession()
 
+  if (session) {
+    console.log(session)
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -20,6 +24,7 @@ export default function Home() {
           <>
             <h3>Signed in as {session.user?.name}</h3>
             <button onClick={() => signOut()}>Sign Out</button>
+            <a href='/brain'>Visit your brain</a>
           </>
         ) : (
           <>
