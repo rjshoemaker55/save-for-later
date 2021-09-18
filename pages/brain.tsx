@@ -4,7 +4,6 @@ import { useSession, getSession } from 'next-auth/client'
 import prisma from '../lib/prisma'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  console.log('in brain')
   const session = await getSession({ req })
   if (!session) {
     res.statusCode = 403
@@ -13,7 +12,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
   const links = await prisma.link.findMany({
     where: {
-      owner: { email: session.user?.email }
+      owner: { email: session.user?.email || undefined }
     },
     include: {
       owner: {
@@ -27,6 +26,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
     props: { links }
   }
+}
+
+type Props = {
+  links: LinkProps[]
 }
 
 const Brain: React.FC<Props> = (props) => {
